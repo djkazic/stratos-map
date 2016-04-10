@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<!-- Head -->
+	<head>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+		<meta charset="utf-8">
+		<title>Stratos</title>
+
+		<!-- Font CSS -->
+		<link href='https://fonts.googleapis.com/css?family=Antic' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+		
+		<!-- Bootstrap -->
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+		
+		<!-- Custom CSS -->
+		<link rel="stylesheet" type="text/css" href="main.css">
+
+		<!-- JS -->
+		<script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkj97OzWfnDLGen6ZxETMPEskLkpRAM2I&callback=initMap&libraries=places">
+		</script>
+		<script src="js/custom.js"></script>
+	</head>
+
+	<!-- Body -->
+	<body>
+		<div class="container-fluid" id="map-container">
+			<div class="row" id="map-row">
+				<div class="col-xs-10" id="map-col">
+					<div id="map"></div>
+				</div>
+				<div class="col-xs-2">
+					<div class="row" style="padding-top: 15px">
+						<button id="rtl" type="button" class="btn btn-primary"><i class="fa fa-male"></i></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
