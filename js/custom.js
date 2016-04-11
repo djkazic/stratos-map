@@ -2,6 +2,7 @@ var map;
 var geocoder;
 var latLng;
 var locMarker;
+var locRadius;
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {streetViewControl: false, mapTypeControl: false});
@@ -239,7 +240,7 @@ function initMap() {
 	setTimeout(function() {
 		$('#rtl').on('click', function() {
 			map.panTo(latLng);
-			map.setZoom(18);
+			map.setZoom(19);
 		})
 	}, 1500);
 
@@ -249,7 +250,7 @@ function initMap() {
 	});
 
 	geocoder = new google.maps.Geocoder();
-	geolocate(geocoder, "XXXX", true);
+	geolocate(geocoder, "Boston College, MA", true);
 }
 
 function setUserLocation() {
@@ -271,10 +272,22 @@ function setUserLocation() {
 				  			position: latLng,
 				  			icon: 'img/current.png'
 				  		});
+				  		
+				  		locRadius = new google.maps.Circle({
+				  			strokeColor: '#FF0000',
+							strokeOpacity: 0.8,
+							strokeWeight: 1.5,
+							fillColor: '#FF0000',
+							fillOpacity: 0.25,
+							map: map,
+							radius: 40
+				  		});
+				  		
+				  		locRadius.bindTo('center', locMarker, 'position');
+
 				  		setTimeout(function(latLng) {
-							map.panTo(latLng);
-							map.setZoom(18);
-					}, 1500, latLng);
+							$('#rtl').click();
+						}, 1500, latLng);
 					} else {
 						locMarker.setPosition(latLng);
 					}
@@ -285,10 +298,6 @@ function setUserLocation() {
 			}, 
 			optn
 	);
-}
-
-function setMapZoom(zoom) {
-	map.setZoom(zoom);
 }
 
 function geolocate(geocoder, address, marker) {
