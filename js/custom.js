@@ -221,6 +221,7 @@ function initMap() {
 	    }
 	];
 	map.setOptions({styles: styles});
+
 	console.log("Setting map center");
 	map.setCenter(new google.maps.LatLng(41.228972, -101.740995));
 
@@ -241,6 +242,11 @@ function initMap() {
 			map.setZoom(18);
 		})
 	}, 1500);
+
+	console.log("Setting map center listener");
+	map.addListener('center_changed', function() {
+		$('#portal-data').empty();
+	});
 
 	geocoder = new google.maps.Geocoder();
 	geolocate(geocoder, "XXXX", true);
@@ -290,7 +296,6 @@ function geolocate(geocoder, address, marker) {
 	  	if (status == google.maps.GeocoderStatus.OK) {
 	  		var zoomLevel = 12;
 	  		if (marker) {
-	  			console.log(results[0].geometry.location);
 	  			var markerLatLng = new google.maps.Marker({
 		  			map: map,
 		  			position: results[0].geometry.location,
@@ -304,7 +309,7 @@ function geolocate(geocoder, address, marker) {
 				console.log("Click listener for " + markerLatLng.getPosition() + " works!");
 				map.panTo(markerLatLng.getPosition());
 				map.setZoom(40);
-				$('#portal-data').append("" + markerLatLng.getPosition());
+				$('#portal-data').html("" + markerLatLng.getPosition());
 			});
 	  		//map.panTo(results[0].geometry.location);
 	  		//map.setZoom(zoomLevel);
