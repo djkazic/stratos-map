@@ -230,19 +230,17 @@ function initMap() {
 	map.setZoom(4);
 
 	if (navigator.geolocation) {
-		setTimeout(setUserLocation, 500);
+		setTimeout(setUserLocation, 2500);
 	} else {
 		alert("Looks like this device isn't supported for Stratos :(");
 	}
 
 	//map.setCenter(latLng);
 	console.log("Setting RTL listener");
-	setTimeout(function() {
-		$('#rtl').on('click', function() {
-			map.panTo(latLng);
-			map.setZoom(19);
-		})
-	}, 1500);
+	$('#rtl').on('click', function() {
+		map.panTo(latLng);
+		map.setZoom(19);
+	});
 
 	console.log("Setting map center listener");
 	map.addListener('center_changed', function() {
@@ -267,6 +265,9 @@ function setUserLocation() {
 
 				if (position.coords.latitude != 0 && position.coords.longitude != 0) {
 					if (!locMarker) {
+						console.log("Setting map zoom limit");
+						map.setOptions({minZoom: 15, maxZoom: 40});
+
 						locMarker = new google.maps.Marker({
 				  			map: map,
 				  			position: latLng,
