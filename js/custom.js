@@ -1,4 +1,3 @@
-
 var map;
 var geocoder;
 var latLng;
@@ -243,8 +242,8 @@ function initMap() {
 		})
 	}, 1500);
 
-	//geocoder = new google.maps.Geocoder();
-	//geolocate(geocoder, home, false);
+	geocoder = new google.maps.Geocoder();
+	geolocate(geocoder, "XXXX", true);
 }
 
 function setUserLocation() {
@@ -301,8 +300,14 @@ function geolocate(geocoder, address, marker) {
 		  		//console.log(address + " => " + markerLatLng.position);
 		  		zoomLevel += 5;
 	  		}
-	  		map.panTo(results[0].geometry.location);
-	  		map.setZoom(zoomLevel);
+			markerLatLng.addListener('click', function() {
+				console.log("Click listener for " + markerLatLng.getPosition() + " works!");
+				map.panTo(markerLatLng.getPosition());
+				map.setZoom(40);
+				$('#portal-data').append("" + markerLatLng.getPosition());
+			});
+	  		//map.panTo(results[0].geometry.location);
+	  		//map.setZoom(zoomLevel);
 	  	} else {
 	  		console.log("Maps API error: " + status);
 	  	}

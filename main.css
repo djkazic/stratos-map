@@ -1,4 +1,5 @@
 html, body {
+	color: white;
 	font-family: Antic;
 	height: 100%;
 	margin: 0;
@@ -17,6 +18,11 @@ html, body {
 
 #map-col {
 	padding-left: 0px;
+	padding-right: 0px;
+}
+
+#rtl, #portal-data {
+	margin-top: 15px;
 }
 
 #pac-input {
