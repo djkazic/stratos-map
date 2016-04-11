@@ -6,6 +6,125 @@ var locRadius;
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {streetViewControl: false, mapTypeControl: false});
+	setStyles();
+
+	console.log("Setting map center");
+	map.setCenter(new google.maps.LatLng(41.228972, -101.740995));
+
+	console.log("Setting map zoom");
+	map.setZoom(4);
+
+	if (navigator.geolocation) {
+		setTimeout(setUserLocation, 2500);
+	} else {
+		alert("Looks like this device isn't supported for Stratos :(");
+	}
+
+	//map.setCenter(latLng);
+	console.log("Setting RTL listener");
+	$('#rtl').on('click', function() {
+		map.panTo(latLng);
+		map.setZoom(19);
+	});
+
+	console.log("Setting map center listener");
+	map.addListener('center_changed', function() {
+		$('#portal-data').empty();
+	});
+
+	geocoder = new google.maps.Geocoder();
+	geolocate(geocoder, "Boston College, MA", true);
+}
+
+function setUserLocation() {
+	var optn = {
+		enableHighAccuracy: true,
+		timeout: Infinity,
+		maximumAge: 0 
+	};
+	navigator.geolocation.watchPosition(
+			function(position) {
+				//console.log("SUCCESS");
+				//console.log("\tLock: " + position.coords.latitude + ", " + position.coords.longitude);
+				latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+				if (position.coords.latitude != 0 && position.coords.longitude != 0) {
+					if (!locMarker) {
+						console.log("Setting map zoom limit");
+						map.setOptions({minZoom: 16, maxZoom: 40});
+
+						locMarker = new google.maps.Marker({
+				  			map: map,
+				  			position: latLng,
+				  			icon: 'img/current.png'
+				  		});
+				  		
+				  		locRadius = new google.maps.Circle({
+				  			strokeColor: '#FF0000',
+							strokeOpacity: 0.8,
+							strokeWeight: 1.5,
+							fillColor: '#FF0000',
+							fillOpacity: 0.25,
+							map: map,
+							radius: 40
+				  		});
+				  		
+				  		locRadius.bindTo('center', locMarker, 'position');
+
+				  		setTimeout(function(latLng) {
+							$('#rtl').click();
+						}, 1500, latLng);
+					} else {
+						locMarker.setPosition(latLng);
+					}
+				}
+			}, 
+			function() {
+				console.log("FAILURE");
+			}, 
+			optn
+	);
+}
+
+function geolocate(geocoder, address, marker) {
+	geocoder.geocode({'address': address}, function(results, status) {
+	  	if (status == google.maps.GeocoderStatus.OK) {
+	  		var zoomLevel = 12;
+	  		if (marker) {
+	  			var markerLatLng = new google.maps.Marker({
+		  			map: map,
+		  			position: results[0].geometry.location,
+		  			icon: 'img/full.png',
+		  			animation: google.maps.Animation.DROP
+		  		});
+		  		//console.log(address + " => " + markerLatLng.position);
+		  		zoomLevel += 5;
+	  		}
+
+			markerLatLng.addListener('click', function() {
+				map.panTo(markerLatLng.getPosition());
+				map.setZoom(40);
+				$('#portal-data').html("Loading hardpoint details...");
+				//$('#portal-data').html("" + markerLatLng.getPosition().lat() + ", " + markerLatLng.getPosition().lng());
+				$.ajax({
+					url: 'test.php',
+					method: 'POST',
+					data: {lat: markerLatLng.getPosition().lat(), lng: markerLatLng.getPosition().lng()},
+					success: function(data) {
+						alert(data);
+					}
+				})
+				//TODO: AJAX to a server endpoint
+			});
+	  		//map.panTo(results[0].geometry.location);
+	  		//map.setZoom(zoomLevel);
+	  	} else {
+	  		console.log("Maps API error: " + status);
+	  	}
+	});
+}
+
+function setStyles() {
 	var styles = [
 	    {
 	        "featureType": "all",
@@ -222,109 +341,4 @@ function initMap() {
 	    }
 	];
 	map.setOptions({styles: styles});
-
-	console.log("Setting map center");
-	map.setCenter(new google.maps.LatLng(41.228972, -101.740995));
-
-	console.log("Setting map zoom");
-	map.setZoom(4);
-
-	if (navigator.geolocation) {
-		setTimeout(setUserLocation, 2500);
-	} else {
-		alert("Looks like this device isn't supported for Stratos :(");
-	}
-
-	//map.setCenter(latLng);
-	console.log("Setting RTL listener");
-	$('#rtl').on('click', function() {
-		map.panTo(latLng);
-		map.setZoom(19);
-	});
-
-	console.log("Setting map center listener");
-	map.addListener('center_changed', function() {
-		$('#portal-data').empty();
-	});
-
-	geocoder = new google.maps.Geocoder();
-	geolocate(geocoder, "Boston College, MA", true);
-}
-
-function setUserLocation() {
-	var optn = {
-		enableHighAccuracy: true,
-		timeout: Infinity,
-		maximumAge: 0 
-	};
-	navigator.geolocation.watchPosition(
-			function(position) {
-				//console.log("SUCCESS");
-				//console.log("\tLock: " + position.coords.latitude + ", " + position.coords.longitude);
-				latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
-				if (position.coords.latitude != 0 && position.coords.longitude != 0) {
-					if (!locMarker) {
-						console.log("Setting map zoom limit");
-						map.setOptions({minZoom: 15, maxZoom: 40});
-
-						locMarker = new google.maps.Marker({
-				  			map: map,
-				  			position: latLng,
-				  			icon: 'img/current.png'
-				  		});
-				  		
-				  		locRadius = new google.maps.Circle({
-				  			strokeColor: '#FF0000',
-							strokeOpacity: 0.8,
-							strokeWeight: 1.5,
-							fillColor: '#FF0000',
-							fillOpacity: 0.25,
-							map: map,
-							radius: 40
-				  		});
-				  		
-				  		locRadius.bindTo('center', locMarker, 'position');
-
-				  		setTimeout(function(latLng) {
-							$('#rtl').click();
-						}, 1500, latLng);
-					} else {
-						locMarker.setPosition(latLng);
-					}
-				}
-			}, 
-			function() {
-				console.log("FAILURE");
-			}, 
-			optn
-	);
-}
-
-function geolocate(geocoder, address, marker) {
-	geocoder.geocode({'address': address}, function(results, status) {
-	  	if (status == google.maps.GeocoderStatus.OK) {
-	  		var zoomLevel = 12;
-	  		if (marker) {
-	  			var markerLatLng = new google.maps.Marker({
-		  			map: map,
-		  			position: results[0].geometry.location,
-		  			icon: 'img/full.png',
-		  			animation: google.maps.Animation.DROP
-		  		});
-		  		//console.log(address + " => " + markerLatLng.position);
-		  		zoomLevel += 5;
-	  		}
-			markerLatLng.addListener('click', function() {
-				console.log("Click listener for " + markerLatLng.getPosition() + " works!");
-				map.panTo(markerLatLng.getPosition());
-				map.setZoom(40);
-				$('#portal-data').html("" + markerLatLng.getPosition());
-			});
-	  		//map.panTo(results[0].geometry.location);
-	  		//map.setZoom(zoomLevel);
-	  	} else {
-	  		console.log("Maps API error: " + status);
-	  	}
-	});
 }
