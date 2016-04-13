@@ -239,7 +239,7 @@ function initMap() {
 	console.log("Setting RTL listener");
 	$('#rtl').on('click', function() {
 		map.panTo(latLng);
-		map.setZoom(19);
+		map.setZoom(18);
 	});
 
 	console.log("Setting map center listener");
@@ -283,7 +283,6 @@ function setUserLocation() {
 							map: map,
 							radius: 40
 				  		});
-				  		
 				  		locRadius.bindTo('center', locMarker, 'position');
 
 				  		setTimeout(function(latLng) {
@@ -295,7 +294,7 @@ function setUserLocation() {
 				}
 			}, 
 			function() {
-				console.log("FAILURE");
+				console.log("Failure to obtain geolocation lock");
 			}, 
 			optn
 	);
