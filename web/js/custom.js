@@ -105,16 +105,18 @@ function geolocate(geocoder, address, marker) {
 				map.panTo(markerLatLng.getPosition());
 				map.setZoom(40);
 				$('#hardpoint-data').html("Loading hardpoint details...");
-				//$('#hardpoint-data').html("" + markerLatLng.getPosition().lat() + ", " + markerLatLng.getPosition().lng());
 				$.ajax({
-					url: 'test.php',
+					url: 'http://localhost:8888/api/hardpoint',
 					method: 'POST',
-					data: {lat: markerLatLng.getPosition().lat(), lng: markerLatLng.getPosition().lng()},
-					success: function(data) {
-						alert(data);
+					data: JSON.stringify({
+						lat: markerLatLng.getPosition().lat(), 
+						lon: markerLatLng.getPosition().lng()
+					}),
+					success: function(raw) {
+						var data = JSON.parse(raw);
+						$('#hardpoint-data').html("Energy: " + data['energy']);
 					}
-				})
-				//TODO: AJAX to a server endpoint
+				});
 			});
 	  		//map.panTo(results[0].geometry.location);
 	  		//map.setZoom(zoomLevel);
@@ -417,31 +419,4 @@ function setUserLocation() {
 			}, 
 			optn
 	);
-}
-
-function geolocate(geocoder, address, marker) {
-	geocoder.geocode({'address': address}, function(results, status) {
-	  	if (status == google.maps.GeocoderStatus.OK) {
-	  		var zoomLevel = 12;
-	  		if (marker) {
-	  			var markerLatLng = new google.maps.Marker({
-		  			map: map,
-		  			position: results[0].geometry.location,
-		  			icon: 'img/full.png',
-		  			animation: google.maps.Animation.DROP
-		  		});
-		  		//console.log(address + " => " + markerLatLng.position);
-		  		zoomLevel += 5;
-	  		}
-			markerLatLng.addListener('click', function() {
-				map.panTo(markerLatLng.getPosition());
-				map.setZoom(40);
-				$('#hardpoint-data').html("" + markerLatLng.getPosition());
-			});
-	  		//map.panTo(results[0].geometry.location);
-	  		//map.setZoom(zoomLevel);
-	  	} else {
-	  		console.log("Maps API error: " + status);
-	  	}
-	});
 }
