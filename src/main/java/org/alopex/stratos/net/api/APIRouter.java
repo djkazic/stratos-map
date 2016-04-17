@@ -2,6 +2,7 @@ package org.alopex.stratos.net.api;
 
 import java.util.logging.LogManager;
 
+import org.alopex.stratos.net.process.Hardpoint;
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Restlet;
@@ -28,7 +29,7 @@ public class APIRouter extends Application {
 	public Restlet createInboundRoot() {
 		Router router = new Router(getContext());
 		router.attachDefault(EchoPage.class);
-		router.attach("/api/search", Search.class);
+		router.attach("/api/hardpoint", Hardpoint.class);
 		return router;
 	}
 }
