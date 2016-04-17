@@ -29,7 +29,7 @@ function initMap() {
 
 	console.log("Setting map center listener");
 	map.addListener('center_changed', function() {
-		$('#portal-data').empty();
+		$('#hardpoint-data').empty();
 	});
 
 	geocoder = new google.maps.Geocoder();
@@ -104,8 +104,8 @@ function geolocate(geocoder, address, marker) {
 			markerLatLng.addListener('click', function() {
 				map.panTo(markerLatLng.getPosition());
 				map.setZoom(40);
-				$('#portal-data').html("Loading hardpoint details...");
-				//$('#portal-data').html("" + markerLatLng.getPosition().lat() + ", " + markerLatLng.getPosition().lng());
+				$('#hardpoint-data').html("Loading hardpoint details...");
+				//$('#hardpoint-data').html("" + markerLatLng.getPosition().lat() + ", " + markerLatLng.getPosition().lng());
 				$.ajax({
 					url: 'test.php',
 					method: 'POST',
@@ -363,7 +363,7 @@ function setStyles() {
 
 	console.log("Setting map center listener");
 	map.addListener('center_changed', function() {
-		$('#portal-data').empty();
+		$('#hardpoint-data').empty();
 	});
 
 	geocoder = new google.maps.Geocoder();
@@ -434,10 +434,9 @@ function geolocate(geocoder, address, marker) {
 		  		zoomLevel += 5;
 	  		}
 			markerLatLng.addListener('click', function() {
-				console.log("Click listener for " + markerLatLng.getPosition() + " works!");
 				map.panTo(markerLatLng.getPosition());
 				map.setZoom(40);
-				$('#portal-data').html("" + markerLatLng.getPosition());
+				$('#hardpoint-data').html("" + markerLatLng.getPosition());
 			});
 	  		//map.panTo(results[0].geometry.location);
 	  		//map.setZoom(zoomLevel);
