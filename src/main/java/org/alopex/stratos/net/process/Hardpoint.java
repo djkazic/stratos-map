@@ -1,14 +1,13 @@
 package org.alopex.stratos.net.process;
 
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 import org.alopex.stratos.db.DB;
-import org.bson.Document;
 import org.json.JSONObject;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
-
-import com.mongodb.Block;
-import com.mongodb.client.FindIterable;
 
 public class Hardpoint extends ServerResource {
 
@@ -22,19 +21,20 @@ public class Hardpoint extends ServerResource {
 				String lat = json.getString("lat");
 				String lon = json.getString("lon");
 				
-				FindIterable<Document> iterable = DB.getDatabase()
-						                            .getCollection("hardpoint")
-						                            .find(new Document("lat", lat).append("lon", lon));
+				lat = String.format("%9.6f", Double.parseDouble(lat));
+				lon = String.format("%9.6f", Double.parseDouble(lon));
 				
-				iterable.forEach(new Block<Document> () {
-					public void apply(Document doc) {
-						try {
-							responseJSON.put("energy", doc.getString("energy"));
-						} catch (Exception ex) {
-							ex.printStackTrace();
-						}
+				Statement stmt = DB.getConnection().createStatement();
+				String query = "SELECT * FROM hardpoints WHERE lat = '" + lat + "' AND lng = '" + lon + "'";
+				try {
+					ResultSet rs = stmt.executeQuery(query);
+					if (rs.next()) {
+						responseJSON.put("name", rs.getString("name"));
+						responseJSON.put("stability", rs.getInt("stability"));
 					}
-				});
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();

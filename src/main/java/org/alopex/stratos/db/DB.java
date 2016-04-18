@@ -1,26 +1,26 @@
 package org.alopex.stratos.db;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class DB {
 	
-	private static MongoClient mongo;
-	private static MongoDatabase database;
+	private static Connection conn;
 	
-	public static MongoClient getMongoClient() {
-		if (mongo == null) {
-			mongo = new MongoClient("localhost");
+	public static void init() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			conn = DriverManager.getConnection(
+					  "jdbc:mysql://" + DBSettings.HOST + "/stratos", 
+					  DBSettings.USER, 
+				      DBSettings.PASS
+				   );
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		return mongo;
 	}
 	
-	public static MongoDatabase getDatabase() {
-		mongo = getMongoClient();
-		if (database == null) {
-			database = mongo.getDatabase("stratos");
-		}
-		return database;
+	public static Connection getConnection() {
+		return conn;
 	}
-
 }

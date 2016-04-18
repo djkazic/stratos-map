@@ -48,3 +48,4 @@ $RECYCLE.BIN/
 *.class
 src/main/java/org/alopex/hyperios/Settings.java
 src/main/java/org/alopex/hyperios/APISettings.java
+src/main/java/org/alopex/stratos/db/DBSettings.java

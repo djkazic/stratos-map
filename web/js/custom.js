@@ -104,7 +104,7 @@ function geolocate(geocoder, address, marker) {
 			markerLatLng.addListener('click', function() {
 				map.panTo(markerLatLng.getPosition());
 				map.setZoom(40);
-				$('#hardpoint-data').html("Loading hardpoint details...");
+
 				$.ajax({
 					url: 'http://localhost:8888/api/hardpoint',
 					method: 'POST',
@@ -114,7 +114,11 @@ function geolocate(geocoder, address, marker) {
 					}),
 					success: function(raw) {
 						var data = JSON.parse(raw);
-						$('#hardpoint-data').html("Energy: " + data['energy']);
+						var hpData = $('#hardpoint-data');
+						hpData.html(
+									  "<div> Name: " + data['name'] + "</div>"
+									+ "<div> Stability: " + data['stability'] + "</div>"
+								   );
 					}
 				});
 			});
